@@ -1,6 +1,6 @@
 # Pacote de replicação - Introdução à Econometria, Listas 1 a 5
 
-Este pacote acompanha o notebook `Introducao_a_econometria_resolvido.ipynb` e organiza scripts em **Python**, **R** e **Stata** para replicar as soluções numéricas, econométricas e gráficas das listas.
+Este pacote acompanha o notebook `Introducao_a_econometria.ipynb` e organiza scripts em **Python**, **R** e **Stata** para replicar as soluções numéricas, econométricas e gráficas das listas.
 
 ## Estrutura
 
