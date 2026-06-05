@@ -1,0 +1,1 @@
+Arquivo data/manual/municipios_lista05.csv não encontrado; questão resolvida simbolicamente no notebook.

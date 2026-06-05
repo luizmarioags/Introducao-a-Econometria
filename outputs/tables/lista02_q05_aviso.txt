@@ -1,0 +1,1 @@
+Arquivo data/manual/cars_lista02.csv não encontrado; questão resolvida teoricamente no notebook.

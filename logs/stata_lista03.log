@@ -1,0 +1,162 @@
+----------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\B03531855158\Documents\Replication\Introducao a Econometria 2022/logs/stata_lista03.log
+  log type:  text
+ opened on:   5 Jun 2026, 01:21:47
+
+. 
+. * Q4 - Wooldridge ceosal1
+. bcuse ceosal1, clear
+
+Contains data from http://fmwww.bc.edu/ec-p/data/wooldridge/ceosal1.dta
+ Observations:           209                  
+    Variables:            12                  25 Sep 2012 14:44
+----------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+----------------------------------------------------------------------------------------------------------------------
+salary          int     %9.0g                 1990 salary, thousands $
+pcsalary        int     %9.0g                 % change salary, 89-90
+sales           float   %9.0g                 1990 firm sales, millions $
+roe             float   %9.0g                 return on equity, 88-90 avg
+pcroe           float   %9.0g                 % change roe, 88-90
+ros             int     %9.0g                 return on firm's stock, 88-90
+indus           byte    %9.0g                 =1 if industrial firm
+finance         byte    %9.0g                 =1 if financial firm
+consprod        byte    %9.0g                 =1 if consumer product firm
+utility         byte    %9.0g                 =1 if transport. or utilties
+lsalary         float   %9.0g                 natural log of salary
+lsales          float   %9.0g                 natural log of sales
+----------------------------------------------------------------------------------------------------------------------
+Sorted by: 
+
+. reg lsalary lsales roe ros, cformat(%9.4f) pformat(%5.4f) sformat(%8.4f)
+
+      Source |       SS           df       MS      Number of obs   =       209
+-------------+----------------------------------   F(3, 205)       =     26.93
+       Model |  18.8613439         3  6.28711463   Prob > F        =    0.0000
+    Residual |  47.8608193       205  .233467411   R-squared       =    0.2827
+-------------+----------------------------------   Adj R-squared   =    0.2722
+       Total |  66.7221632       208  .320779631   Root MSE        =    .48318
+
+------------------------------------------------------------------------------
+     lsalary | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+      lsales |     0.2803     0.0353   7.9364   0.0000       0.2107      0.3500
+         roe |     0.0174     0.0041   4.2560   0.0000       0.0093      0.0255
+         ros |     0.0002     0.0005   0.4460   0.6561      -0.0008      0.0013
+       _cons |     4.3117     0.3154  13.6692   0.0000       3.6898      4.9336
+------------------------------------------------------------------------------
+
+. display "Efeito percentual aproximado de +50 em ros = " 100*(_b[ros]*50)
+Efeito percentual aproximado de +50 em ros = 1.208276
+
+. test ros
+
+ ( 1)  ros = 0
+
+       F(  1,   205) =    0.20
+            Prob > F =    0.6561
+
+. twoway (scatter lsalary ros) (lfit lsalary ros), xtitle("Retorno sobre vendas, ROS") ytitle("log(salário)") title("L
+> ista 3 - Questão 4") name(g_l3q4, replace)
+
+. graph export "$FIGS_STATA/lista03_q04_ceosal1_ros_lsalary.png", replace width(1800)
+file C:\Users\B03531855158\Documents\Replication\Introducao a Econometria
+    2022/outputs/figures/stata/lista03_q04_ceosal1_ros_lsalary.png saved as PNG format
+
+. graph export "$FIGS_STATA/lista03_q04_ceosal1_ros_lsalary.pdf", replace
+file C:\Users\B03531855158\Documents\Replication\Introducao a Econometria
+    2022/outputs/figures/stata/lista03_q04_ceosal1_ros_lsalary.pdf saved as PDF format
+
+. 
+. * Q6 - Wooldridge return
+. bcuse return, clear
+
+Contains data from http://fmwww.bc.edu/ec-p/data/wooldridge/return.dta
+ Observations:           142                  
+    Variables:            11                  26 Jan 2000 12:16
+----------------------------------------------------------------------------------------------------------------------
+Variable      Storage   Display    Value
+    name         type    format    label      Variable label
+----------------------------------------------------------------------------------------------------------------------
+roe             float   %9.0g                 
+rok             float   %9.0g                 
+dkr             float   %9.0g                 
+eps             float   %9.0g                 
+netinc          float   %9.0g                 
+sp90            float   %9.0g                 
+sp94            float   %9.0g                 
+salary          float   %9.0g                 
+return          float   %9.0g                 
+lsalary         float   %9.0g                 
+lsp90           float   %9.0g                 
+----------------------------------------------------------------------------------------------------------------------
+Sorted by: 
+
+. reg return dkr eps salary netinc, cformat(%9.3f) pformat(%5.3f) sformat(%8.3f)
+
+      Source |       SS           df       MS      Number of obs   =       142
+-------------+----------------------------------   F(4, 137)       =      1.41
+       Model |  8649.25416         4  2162.31354   Prob > F        =    0.2347
+    Residual |   210446.92       137  1536.10891   R-squared       =    0.0395
+-------------+----------------------------------   Adj R-squared   =    0.0114
+       Total |  219096.175       141  1553.87358   Root MSE        =    39.193
+
+------------------------------------------------------------------------------
+      return | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         dkr |      0.321      0.201    1.595   0.113       -0.077       0.718
+         eps |      0.043      0.078    0.546   0.586       -0.112       0.197
+      salary |      0.003      0.002    1.595   0.113       -0.001       0.008
+      netinc |     -0.005      0.005   -1.093   0.276       -0.014       0.004
+       _cons |    -14.370      6.894   -2.085   0.039      -28.002      -0.739
+------------------------------------------------------------------------------
+
+. 
+. * A base return pode já conter lsalary/lnetinc em algumas instalações.
+. * Por isso, removemos antes de recriar para tornar o script reexecutável.
+. capture drop lnetinc
+
+. capture drop lsalary
+
+. quietly gen lnetinc = ln(netinc) if netinc > 0
+
+. quietly gen lsalary = ln(salary) if salary > 0
+
+. reg return dkr eps lsalary lnetinc if !missing(lnetinc, lsalary), cformat(%9.3f) pformat(%5.3f) sformat(%8.3f)
+
+      Source |       SS           df       MS      Number of obs   =       142
+-------------+----------------------------------   F(4, 137)       =      1.17
+       Model |  7239.83639         4   1809.9591   Prob > F        =    0.3266
+    Residual |  211856.338       137  1546.39663   R-squared       =    0.0330
+-------------+----------------------------------   Adj R-squared   =    0.0048
+       Total |  219096.175       141  1553.87358   Root MSE        =    39.324
+
+------------------------------------------------------------------------------
+      return | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         dkr |      0.327      0.203    1.612   0.109       -0.074       0.727
+         eps |      0.069      0.080    0.853   0.395       -0.090       0.227
+     lsalary |      7.242      6.313    1.147   0.253       -5.241      19.724
+     lnetinc |     -4.745      3.386   -1.402   0.163      -11.440       1.950
+       _cons |    -36.299     39.374   -0.922   0.358     -114.158      41.560
+------------------------------------------------------------------------------
+
+. predict return_hat, xb
+
+. twoway (scatter return_hat return) (function y=x, range(return)), xtitle("Retorno observado") ytitle("Retorno ajusta
+> do") title("Lista 3 - Questão 6") name(g_l3q6, replace)
+
+. graph export "$FIGS_STATA/lista03_q06_return_observado_ajustado.png", replace width(1800)
+(file C:\Users\B03531855158\Documents\Replication\Introducao a Econometria
+    2022/outputs/figures/stata/lista03_q06_return_observado_ajustado.png not found)
+file C:\Users\B03531855158\Documents\Replication\Introducao a Econometria
+    2022/outputs/figures/stata/lista03_q06_return_observado_ajustado.png saved as PNG format
+
+. graph export "$FIGS_STATA/lista03_q06_return_observado_ajustado.pdf", replace
+file C:\Users\B03531855158\Documents\Replication\Introducao a Econometria
+    2022/outputs/figures/stata/lista03_q06_return_observado_ajustado.pdf saved as PDF format
+
+. 
+. capture log close

@@ -1,0 +1,40 @@
+do stata/00_setup.do
+capture log close _all
+log using "$LOGS/stata_lista02.log", replace text
+
+* Q1 - cálculo direto a partir da equação estimada
+clear
+set obs 2
+gen caso = _n
+gen educ_prevista = .
+replace educ_prevista = 10.36 - 0.094*0 + 0.131*12 + 0.210*12 in 1
+replace educ_prevista = 10.36 - 0.094*0 + 0.131*16 + 0.210*16 in 2
+label define caso 1 "A" 2 "B"
+label values caso caso
+list
+graph bar educ_prevista, over(caso) ytitle("Educação prevista, em anos") title("Lista 2 - Questão 1") name(g_l2q1, replace)
+graph export "$FIGS_STATA/lista02_q01_educacao_prevista.png", replace width(1800)
+graph export "$FIGS_STATA/lista02_q01_educacao_prevista.pdf", replace
+
+* Q5 - se a base cars_lista02.csv tiver sido fornecida
+capture confirm file "$DATA/cars_lista02.csv"
+if !_rc {
+    import delimited "$DATA/cars_lista02.csv", clear
+    summarize KPL VM HP PV VOL
+    regress KPL VM HP PV
+    twoway (scatter KPL VM) (lfit KPL VM), xtitle("Velocidade máxima") ytitle("Quilômetros por litro") title("Lista 2 - Questão 5") name(g_l2q5a, replace)
+    graph export "$FIGS_STATA/lista02_q05_kpl_vm.png", replace width(1800)
+    graph export "$FIGS_STATA/lista02_q05_kpl_vm.pdf", replace
+    regress VM HP PV
+    predict r_vm, resid
+    regress KPL r_vm
+    predict kpl_fwl, xb
+    twoway (scatter KPL r_vm) (line kpl_fwl r_vm, sort), xtitle("Resíduo de VM") ytitle("KPL") title("Lista 2 - Questão 5: FWL") name(g_l2q5b, replace)
+    graph export "$FIGS_STATA/lista02_q05_fwl.png", replace width(1800)
+    graph export "$FIGS_STATA/lista02_q05_fwl.pdf", replace
+}
+else {
+    display "Arquivo cars_lista02.csv não encontrado; ver solução teórica no notebook."
+}
+
+capture log close

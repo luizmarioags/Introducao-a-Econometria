@@ -1,0 +1,6 @@
+
+	studentized Breusch-Pagan test
+
+data:  mod_het
+BP = 7.6266, df = 2, p-value = 0.02208
+

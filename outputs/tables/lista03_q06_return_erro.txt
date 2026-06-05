@@ -1,0 +1,1 @@
+Instale o pacote Python wooldridge: pip install wooldridge

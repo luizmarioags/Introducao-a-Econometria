@@ -1,0 +1,168 @@
+----------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\B03531855158\Documents\Replication\Introducao a Econometria 2022/logs/stata_lista05.log
+  log type:  text
+ opened on:   5 Jun 2026, 01:21:52
+
+. 
+. * Q2 - se a base municipal tiver sido fornecida
+. capture confirm file "$DATA/municipios_lista05.csv"
+
+. if !_rc {
+.     import delimited "$DATA/municipios_lista05.csv", clear
+.     regress pobreza no ne su co pibpc escol c.escol#c.no c.escol#c.ne c.escol#c.su c.escol#c.co
+.     predict pobreza_hat, xb
+.     twoway (scatter pobreza_hat pobreza) (function y=x, range(pobreza)), xtitle("Pobreza observada") ytitle("Pobreza
+>  ajustada") title("Lista 5 - Questão 2") name(g_l5q2, replace)
+.     graph export "$FIGS_STATA/lista05_q02_pobreza_observado_ajustado.png", replace width(1800)
+.     graph export "$FIGS_STATA/lista05_q02_pobreza_observado_ajustado.pdf", replace
+.     regress pobreza no ne su co pibpc escol c.escol#c.no c.escol#c.ne c.escol#c.su c.escol#c.co, vce(robust)
+.     estat imtest, white
+. }
+
+. else {
+.     display "Arquivo municipios_lista05.csv não encontrado; ver solução simbólica no notebook."
+Arquivo municipios_lista05.csv não encontrado; ver solução simbólica no notebook.
+. }
+
+. 
+. * Q3 - dados digitados do enunciado
+. import delimited "$DATA/lista05_q03_hetero.csv", clear
+(encoding automatically selected: ISO-8859-1)
+(3 vars, 10 obs)
+
+. reg y x
+
+      Source |       SS           df       MS      Number of obs   =        10
+-------------+----------------------------------   F(1, 8)         =      2.88
+       Model |  6681126.34         1  6681126.34   Prob > F        =    0.1283
+    Residual |    18581020         8   2322627.5   R-squared       =    0.2645
+-------------+----------------------------------   Adj R-squared   =    0.1725
+       Total |  25262146.3         9  2806905.15   Root MSE        =      1524
+
+------------------------------------------------------------------------------
+           y | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           x |   4.552834   2.684397     1.70   0.128    -1.637397    10.74306
+       _cons |   363.5256   833.9117     0.44   0.674    -1559.478    2286.529
+------------------------------------------------------------------------------
+
+. predict yhat, xb
+
+. predict resid, resid
+
+. estat imtest, white
+
+White's test
+H0: Homoskedasticity
+Ha: Unrestricted heteroskedasticity
+
+    chi2(2) =   7.63
+Prob > chi2 = 0.0221
+
+Cameron & Trivedi's decomposition of IM-test
+
+--------------------------------------------------
+              Source |       chi2     df         p
+---------------------+----------------------------
+  Heteroskedasticity |       7.63      2    0.0221
+            Skewness |       2.73      1    0.0987
+            Kurtosis |       3.28      1    0.0702
+---------------------+----------------------------
+               Total |      13.63      4    0.0086
+--------------------------------------------------
+
+. reg y x, vce(robust)
+
+Linear regression                               Number of obs     =         10
+                                                F(1, 8)           =       1.69
+                                                Prob > F          =     0.2302
+                                                R-squared         =     0.2645
+                                                Root MSE          =       1524
+
+------------------------------------------------------------------------------
+             |               Robust
+           y | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           x |   4.552834   3.505611     1.30   0.230    -3.531119    12.63679
+       _cons |   363.5256   433.7457     0.84   0.426    -636.6937    1363.745
+------------------------------------------------------------------------------
+
+. gen w = 1/(x^2)
+
+. reg y x [aw=w]
+(sum of wgt is .0025063163616323)
+
+      Source |       SS           df       MS      Number of obs   =        10
+-------------+----------------------------------   F(1, 8)         =      8.99
+       Model |  729421.617         1  729421.617   Prob > F        =    0.0171
+    Residual |  649370.409         8  81171.3011   R-squared       =    0.5290
+-------------+----------------------------------   Adj R-squared   =    0.4702
+       Total |  1378792.03         9  153199.114   Root MSE        =    284.91
+
+------------------------------------------------------------------------------
+           y | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+           x |   5.719693   1.908028     3.00   0.017     1.319773    10.11961
+       _cons |    226.116   120.5221     1.88   0.097    -51.80843    504.0405
+------------------------------------------------------------------------------
+
+. twoway (scatter y x) (line yhat x, sort), xtitle("Número médio de empregados") ytitle("Salário médio por trabalhador
+> ") title("Lista 5 - Questão 3") name(g_l5q3a, replace)
+
+. graph export "$FIGS_STATA/lista05_q03_hetero_scatter_mqo.png", replace width(1800)
+(file C:\Users\B03531855158\Documents\Replication\Introducao a Econometria
+    2022/outputs/figures/stata/lista05_q03_hetero_scatter_mqo.png not found)
+file C:\Users\B03531855158\Documents\Replication\Introducao a Econometria
+    2022/outputs/figures/stata/lista05_q03_hetero_scatter_mqo.png saved as PNG format
+
+. graph export "$FIGS_STATA/lista05_q03_hetero_scatter_mqo.pdf", replace
+file C:\Users\B03531855158\Documents\Replication\Introducao a Econometria
+    2022/outputs/figures/stata/lista05_q03_hetero_scatter_mqo.pdf saved as PDF format
+
+. gen resid2 = resid^2
+
+. twoway scatter resid2 x, xtitle("Número médio de empregados") ytitle("Resíduo ao quadrado") title("Lista 5 - Questão
+>  3") name(g_l5q3b, replace)
+
+. graph export "$FIGS_STATA/lista05_q03_residuos_quadrados.png", replace width(1800)
+(file C:\Users\B03531855158\Documents\Replication\Introducao a Econometria
+    2022/outputs/figures/stata/lista05_q03_residuos_quadrados.png not found)
+file C:\Users\B03531855158\Documents\Replication\Introducao a Econometria
+    2022/outputs/figures/stata/lista05_q03_residuos_quadrados.png saved as PNG format
+
+. graph export "$FIGS_STATA/lista05_q03_residuos_quadrados.pdf", replace
+file C:\Users\B03531855158\Documents\Replication\Introducao a Econometria
+    2022/outputs/figures/stata/lista05_q03_residuos_quadrados.pdf saved as PDF format
+
+. 
+. * Q5
+. clear
+
+. input obs var_u
+
+           obs      var_u
+  1. 1 1
+  2. 2 3
+  3. 3 4
+  4. 4 6
+  5. 5 8
+  6. end
+
+. display "beta_hat = (0+7+5+0+0)/5 = " (0+7+5+0+0)/5
+beta_hat = (0+7+5+0+0)/5 = 2.4
+
+. graph bar var_u, over(obs) ytitle("Var(u_i | X)") title("Lista 5 - Questão 5") name(g_l5q5, replace)
+
+. graph export "$FIGS_STATA/lista05_q05_variancias_condicionais.png", replace width(1800)
+(file C:\Users\B03531855158\Documents\Replication\Introducao a Econometria
+    2022/outputs/figures/stata/lista05_q05_variancias_condicionais.png not found)
+file C:\Users\B03531855158\Documents\Replication\Introducao a Econometria
+    2022/outputs/figures/stata/lista05_q05_variancias_condicionais.png saved as PNG format
+
+. graph export "$FIGS_STATA/lista05_q05_variancias_condicionais.pdf", replace
+file C:\Users\B03531855158\Documents\Replication\Introducao a Econometria
+    2022/outputs/figures/stata/lista05_q05_variancias_condicionais.pdf saved as PDF format
+
+. 
+. capture log close

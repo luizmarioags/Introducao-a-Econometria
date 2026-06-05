@@ -1,0 +1,21 @@
+
+Call:
+lm(formula = log(salary) ~ log(sales) + roe + ros, data = ceosal1)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.96060 -0.27144 -0.03264  0.22563  2.79805 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 4.3117124  0.3154329  13.669  < 2e-16 ***
+log(sales)  0.2803149  0.0353200   7.936 1.34e-13 ***
+roe         0.0174167  0.0040923   4.256 3.17e-05 ***
+ros         0.0002417  0.0005418   0.446    0.656    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.4832 on 205 degrees of freedom
+Multiple R-squared:  0.2827,	Adjusted R-squared:  0.2722 
+F-statistic: 26.93 on 3 and 205 DF,  p-value: 1.001e-14
+

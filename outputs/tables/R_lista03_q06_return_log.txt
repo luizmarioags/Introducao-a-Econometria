@@ -1,0 +1,20 @@
+
+Call:
+lm(formula = ret ~ dkr + eps + lsalary + lnetinc, data = ret)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-80.402 -26.729  -4.223  19.475 126.948 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)
+(Intercept) -36.29934   39.37380  -0.922    0.358
+dkr           0.32658    0.20265   1.612    0.109
+eps           0.06854    0.08035   0.853    0.395
+lsalary       7.24181    6.31251   1.147    0.253
+lnetinc      -4.74530    3.38566  -1.402    0.163
+
+Residual standard error: 39.32 on 137 degrees of freedom
+Multiple R-squared:  0.03304,	Adjusted R-squared:  0.004812 
+F-statistic:  1.17 on 4 and 137 DF,  p-value: 0.3266
+

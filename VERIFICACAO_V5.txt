@@ -1,0 +1,4 @@
+Correção v5:
+- Em stata/lista03.do, substituído `capture drop lnetinc lsalary` por comandos separados:
+  `capture drop lnetinc` e `capture drop lsalary`.
+- Motivo: em Stata, `drop var1 var2` falha se qualquer variável do varlist não existir; com `capture`, o erro é ocultado, mas nenhuma variável é removida. Como `lnetinc` não existe na base return e `lsalary` existe, o comando antigo não removia `lsalary`, gerando erro ao recriá-la.
